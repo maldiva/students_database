@@ -1,0 +1,28 @@
+version: '3.6'
+
+services:
+  go:
+    container_name: backend
+    build: ./
+    volumes:
+      - $GOPATH/src/workflow/students_database:/$GOPATH/src/workflow/students_database
+    command: go run ./src/main.go
+    working_dir: $GOPATH/src/workflow/students_database
+    environment:
+      POSTGRES_DB: docker
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRESS_HOST: db
+    ports:
+      - "80:80"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: docker
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRESS_HOST: db
+    volumes:
+      - ./CreateDB.sql:/docker-entrypoint-initdb.d/CreateDB.sql
+    ports:
+      - "5432:5432"
